@@ -53,4 +53,11 @@ export class UsersController {
   ) {
     return this.usersService.updateProfile(userId, userProfileDto);
   }
+
+  @Get('/profiles/search')
+  async searchProfiles(
+    @Query('q') searchQuery: string,
+  ): Promise<UserProfileDto[]> {
+    return this.usersService.searchProfiles(searchQuery);
+  }
 }

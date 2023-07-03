@@ -63,4 +63,17 @@ export class UsersService {
       new: true,
     });
   }
+
+  async searchProfiles(searchQuery: string): Promise<User[]> {
+    const regexQuery = new RegExp(searchQuery, 'i');
+    const query = {
+      $or: [
+        { name: regexQuery },
+        { email: regexQuery },
+        { bio: regexQuery },
+        // Add more fields to search here
+      ],
+    };
+    return this.userModel.find(query).exec();
+  }
 }
