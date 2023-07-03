@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './user.model';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,8 +12,29 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  // pagination
+  async findAll(
+    queryDto: PaginationQueryDto,
+    searchQuery: string,
+  ): Promise<User[]> {
+    const { limit, page } = queryDto;
+    const skip = (page - 1) * limit;
+
+    let query = this.userModel.find();
+
+    // Apply search query if provided
+    if (searchQuery) {
+      query = query.find({
+        $or: [
+          { name: { $regex: searchQuery, $options: 'i' } },
+          { email: { $regex: searchQuery, $options: 'i' } },
+        ],
+      });
+    }
+
+    query = query.skip(skip).limit(limit);
+
+    return query.exec();
   }
 
   async findOne(id: string): Promise<User> {
@@ -29,5 +52,15 @@ export class UsersService {
 
   async remove(id: string): Promise<User> {
     return this.userModel.findByIdAndRemove(id);
+  }
+
+  // Profile
+  async updateProfile(
+    userId: string,
+    userProfileDto: UserProfileDto,
+  ): Promise<User> {
+    return this.userModel.findByIdAndUpdate(userId, userProfileDto, {
+      new: true,
+    });
   }
 }
