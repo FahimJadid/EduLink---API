@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { UsersService } from './users.service';
-import { UserProfileDto } from './dto/user-profile.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('users')
@@ -43,21 +42,5 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
-  }
-
-  // Profile
-  @Patch(':id/profile')
-  updateProfile(
-    @Param('id') userId: string,
-    @Body() userProfileDto: UserProfileDto,
-  ) {
-    return this.usersService.updateProfile(userId, userProfileDto);
-  }
-
-  @Get('/profiles/search')
-  async searchProfiles(
-    @Query('q') searchQuery: string,
-  ): Promise<UserProfileDto[]> {
-    return this.usersService.searchProfiles(searchQuery);
   }
 }

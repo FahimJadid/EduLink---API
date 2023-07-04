@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './user.model';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import { UserProfileDto } from './dto/user-profile.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Injectable()
@@ -52,28 +51,5 @@ export class UsersService {
 
   async remove(id: string): Promise<User> {
     return this.userModel.findByIdAndRemove(id);
-  }
-
-  // Profile
-  async updateProfile(
-    userId: string,
-    userProfileDto: UserProfileDto,
-  ): Promise<User> {
-    return this.userModel.findByIdAndUpdate(userId, userProfileDto, {
-      new: true,
-    });
-  }
-
-  async searchProfiles(searchQuery: string): Promise<User[]> {
-    const regexQuery = new RegExp(searchQuery, 'i');
-    const query = {
-      $or: [
-        { name: regexQuery },
-        { email: regexQuery },
-        { bio: regexQuery },
-        // Add more fields to search here
-      ],
-    };
-    return this.userModel.find(query).exec();
   }
 }
