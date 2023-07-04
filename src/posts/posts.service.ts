@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { Post, PostDocument } from './post.model';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
@@ -14,7 +14,7 @@ export class PostsService {
     queryDto: PaginationQueryDto,
     searchQuery: string,
   ): Promise<Post[]> {
-    const { limit, page } = queryDto;
+    const { limit, page, sortBy, sortField } = queryDto;
     const skip = (page - 1) * limit;
 
     let query = this.postModel.find();
@@ -27,6 +27,14 @@ export class PostsService {
           { content: { $regex: searchQuery, $options: 'i' } },
         ],
       });
+    }
+
+    // Apply sorting options if provided
+    if (sortField && sortBy) {
+      const sortOptions: { [key: string]: SortOrder } = {
+        [sortField]: sortBy === 'asc' ? 1 : -1,
+      };
+      query = query.sort(sortOptions);
     }
 
     query = query.skip(skip).limit(limit);

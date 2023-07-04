@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { User, UserDocument } from './user.model';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
@@ -16,7 +16,7 @@ export class UsersService {
     queryDto: PaginationQueryDto,
     searchQuery: string,
   ): Promise<User[]> {
-    const { limit, page } = queryDto;
+    const { limit, page, sortBy, sortField } = queryDto;
     const skip = (page - 1) * limit;
 
     let query = this.userModel.find();
@@ -29,6 +29,13 @@ export class UsersService {
           { email: { $regex: searchQuery, $options: 'i' } },
         ],
       });
+    }
+    // Apply sorting options if provided
+    if (sortField && sortBy) {
+      const sortOptions: { [key: string]: SortOrder } = {
+        [sortField]: sortBy === 'asc' ? 1 : -1,
+      };
+      query = query.sort(sortOptions);
     }
 
     query = query.skip(skip).limit(limit);
