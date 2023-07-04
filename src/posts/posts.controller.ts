@@ -6,9 +6,11 @@ import {
   Delete,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -19,8 +21,11 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(
+    @Query() queryDto: PaginationQueryDto,
+    @Query('search') searchQuery: string,
+  ) {
+    return this.postsService.findAll(queryDto, searchQuery);
   }
 
   @Get(':id')

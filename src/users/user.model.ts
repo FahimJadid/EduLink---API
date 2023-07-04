@@ -36,3 +36,4 @@ export interface UserDocument extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.index({ name: 1, email: 1 });

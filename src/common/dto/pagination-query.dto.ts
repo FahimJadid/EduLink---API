@@ -4,10 +4,13 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsInt()
   @Min(1)
-  page: number;
+  page?: number;
 
   @IsOptional()
   @IsInt()
   @Min(1)
-  limit: number;
+  limit?: number;
+
+  @IsOptional()
+  search?: string;
 }
