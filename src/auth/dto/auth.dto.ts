@@ -42,3 +42,9 @@ export class AuthResponseDto {
     role: Role;
   };
 }
+
+export class RoleDto {
+  @IsNotEmpty()
+  @IsEnum(Role)
+  role: Role;
+}
