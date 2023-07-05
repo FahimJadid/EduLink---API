@@ -4,8 +4,9 @@ import {
   MinLength,
   MaxLength,
   Matches,
+  IsEnum,
 } from 'class-validator';
-
+import { Role } from '../roles';
 export class LoginDto {
   @IsNotEmpty()
   @IsString()
@@ -31,4 +32,13 @@ export class RegisterDto {
     message: 'Password too weak',
   })
   password: string;
+}
+export class AuthResponseDto {
+  accessToken: string;
+  expiresIn: number;
+  user: {
+    id: string;
+    username: string;
+    role: Role;
+  };
 }
