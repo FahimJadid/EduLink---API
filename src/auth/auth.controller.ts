@@ -1,6 +1,5 @@
-import { Controller, Patch, Param, Body } from '@nestjs/common';
+import { Controller, Post, Patch, Param, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Role } from '../auth/roles';
 import {
   RoleDto,
   LoginDto,
@@ -11,6 +10,16 @@ import {
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+    return this.authService.register(registerDto);
+  }
+
+  @Post('login')
+  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
+    return this.authService.login(loginDto);
+  }
 
   @Patch('assign-role/:userId')
   async assignRole(
