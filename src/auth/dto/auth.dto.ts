@@ -7,10 +7,11 @@ import {
   IsEnum,
 } from 'class-validator';
 import { Role } from '../roles';
+
 export class LoginDto {
   @IsNotEmpty()
   @IsString()
-  username: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -22,7 +23,7 @@ export class RegisterDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
-  username: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -32,13 +33,18 @@ export class RegisterDto {
     message: 'Password too weak',
   })
   password: string;
+
+  @IsNotEmpty()
+  @IsEnum(Role)
+  role: Role;
 }
+
 export class AuthResponseDto {
   accessToken: string;
   expiresIn: number;
   user: {
     id: string;
-    username: string;
+    email: string;
     role: Role;
   };
 }
